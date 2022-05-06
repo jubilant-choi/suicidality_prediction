@@ -13,7 +13,7 @@ class SaveModel:
     ):
         self.best_valid_loss = best_valid_loss
         self.args = args
-        self.prev = None
+        self.model_name = None
         
     def save_best_model(
         self, current_valid_loss, 
@@ -31,8 +31,9 @@ class SaveModel:
         optimizer, criterion, best=False
     ):
         mode = 'best_model' if best==True else 'final_model'
-        if (mode == 'best_mode') and (self.prev != None):
-            os.remove(self.path)
+        if (mode == 'best_mode') and (self.model_name != None):
+            os.remove(self.model_name)
+        self.model_name = f'{self.args.exp_name}_{mode}_{epoch}.pth'
         self.path =  f'/scratch/connectome/jubin/ABCD-3DCNN-jub/suicidality/outputs/{self.args.exp_name}_{mode}_{epoch}.pth'
         torch.save({
                     'epoch': epoch,
