@@ -93,7 +93,7 @@ def train(net,partition,optimizer,criterion, args):
 
 
 # define validation step
-def validate(net,partition,criterion, scheduler,args):
+def validate(net,partition,criterion,args,scheduler=None):
     valloader = torch.utils.data.DataLoader(partition['val'],
                                            batch_size=args.val_batch_size,
                                            shuffle=False,
@@ -245,7 +245,10 @@ def experiment(partition, args): #in_channels,out_dim
     for epoch in tqdm(range(1,args.epoch+1)):
         ts = time.time()
         net, train_loss, train_acc = train(net,partition,optimizer,criterion,args)
-        val_loss, val_acc = validate(net,partition,criterion, scheduler,args)
+        if args.scheduler == 'on':
+            val_loss, val_acc = validate(net,partition,criterion,args,scheduler)
+        else:
+            val_loss, val_acc = validate(net,partition,criterion,args)
         te = time.time()
         curr_learning_rate = optimizer.param_groups[0]['lr']
 
